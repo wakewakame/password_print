@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Account Print</title>
+
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400&display=swap" rel="stylesheet">
+		<style>
+			body {
+				margin: 0px;
+				border: 0px;
+				padding: 0px;
+			}
+			h1 {
+				font-family: 'Roboto Mono', monospace;
+				font-weight: 400;
+				font-size: 16px;
+				margin: 0px;
+				border: 0px;
+				padding: 0px;
+			}
+			p {
+				font-family: 'Roboto Mono', monospace;
+				font-weight: 300;
+				font-size: 16px;
+				margin: 0px;
+				border: 0px;
+				padding: 0px;
+			}
+			input {
+				font-family: 'Roboto Mono', monospace;
+				font-weight: 300;
+				font-size: 16px;
+				margin: 0px;
+				border: 0px;
+				padding: 0px;
+			}
+		</style>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha512-CNgIRecGo7nphbeZ04Sc13ka07paqdeTu0WR1IM4kNcpmBAUSHSQX0FslNhTDadL4O5SAGapGt4FodqL8My0mA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+		<script type="module">
+			const draw_account = (target_elem, account) => {
+				let account_elem = null;
+				let title_elem = null;
+				let rows_elem = null;
+				let qr_elem = null;
+				const create_row_elem = (key, value) => {
+					const row_elem = document.createElement("div");
+					row_elem.style["position"] = "relative";
+					row_elem.style["display"] = "flex";
+					row_elem.style["flex-wrap"] = "nowrap";
+					row_elem.style["padding-top"] = "2px";
+					row_elem.style["padding-bottom"] = "2px";
+					row_elem.style["border-bottom"] = "1px solid #000";
+					const key_elem = document.createElement("p");
+					key_elem.innerHTML = key;
+					key_elem.style["overflow-wrap"] = "break-word";
+					key_elem.style["float"] = "left";
+					key_elem.style["width"] = "30%";
+					key_elem.style["cursor"] = "pointer";
+					key_elem.addEventListener("click", () => {
+						const input_elem = document.createElement("input");
+						input_elem.value = key_elem.innerHTML;
+						input_elem.style["float"] = "left";
+						input_elem.style["width"] = "30%";
+						input_elem.addEventListener("focusout", () => {
+							if (input_elem.value !== "") { key_elem.innerHTML = input_elem.value; }
+							row_elem.insertBefore(key_elem, input_elem);
+							row_elem.removeChild(input_elem);
+							const parent_elem = row_elem.parentNode;
+							const account = new Map(Array.from(parent_elem.childNodes).map(row_elem => {
+								return [row_elem.childNodes[0].innerHTML, row_elem.childNodes[1].innerHTML];
+							}));
+							draw_account(target_elem, account);
+						});
+						row_elem.insertBefore(input_elem, key_elem);
+						row_elem.removeChild(key_elem);
+						input_elem.focus();
+					});
+					row_elem.appendChild(key_elem);
+					const value_elem = document.createElement("p");
+					value_elem.innerHTML = value;
+					value_elem.style["overflow-wrap"] = "break-word";
+					value_elem.style["float"] = "left";
+					value_elem.style["width"] = "70%";
+					value_elem.style["cursor"] = "pointer";
+					value_elem.addEventListener("click", () => {
+						const input_elem = document.createElement("input");
+						input_elem.value = value_elem.innerHTML;
+						input_elem.style["float"] = "left";
+						input_elem.style["width"] = "70%";
+						input_elem.addEventListener("focusout", () => {
+							if (input_elem.value !== "") { value_elem.innerHTML = input_elem.value; }
+							row_elem.insertBefore(value_elem, input_elem);
+							row_elem.removeChild(input_elem);
+							const parent_elem = row_elem.parentNode;
+							const account = new Map(Array.from(parent_elem.childNodes).map(row_elem => {
+								return [row_elem.childNodes[0].innerHTML, row_elem.childNodes[1].innerHTML];
+							}));
+							draw_account(target_elem, account);
+						});
+						row_elem.insertBefore(input_elem, value_elem);
+						row_elem.removeChild(value_elem);
+						input_elem.focus();
+					});
+					row_elem.appendChild(value_elem);
+					const delete_elem = document.createElement("p");
+					delete_elem.innerHTML = "[x]";
+					delete_elem.style["opacity"] = "0";
+					delete_elem.style["background-color"] = "#fff";
+					delete_elem.style["position"] = "absolute";
+					delete_elem.style["right"] = "0%";
+					delete_elem.style["cursor"] = "pointer";
+					delete_elem.addEventListener("mouseenter", () => {
+						if (row_elem.parentNode.firstChild === row_elem) {
+							return;
+						}
+						delete_elem.style["opacity"] = "1";
+					});
+					delete_elem.addEventListener("mouseleave", () => {
+						delete_elem.style["opacity"] = "0";
+					});
+					delete_elem.addEventListener("click", () => {
+						const parent_elem = row_elem.parentNode;
+						if (parent_elem.firstChild === row_elem) {
+							return;
+						}
+						parent_elem.removeChild(row_elem);
+						const account = new Map(Array.from(parent_elem.childNodes).map(row_elem => {
+							return [row_elem.childNodes[0].innerHTML, row_elem.childNodes[1].innerHTML];
+						}));
+						draw_account(target_elem, account);
+					});
+					row_elem.appendChild(delete_elem);
+					const add_elem = document.createElement("p");
+					add_elem.innerHTML = "[+]";
+					add_elem.style["opacity"] = "0";
+					add_elem.style["background-color"] = "#fff";
+					add_elem.style["position"] = "absolute";
+					add_elem.style["left"] = "100%";
+					add_elem.style["top"] = "12px";
+					add_elem.style["cursor"] = "pointer";
+					row_elem.appendChild(add_elem);
+					add_elem.addEventListener("mouseenter", () => {
+						add_elem.style["opacity"] = "1";
+					});
+					add_elem.addEventListener("mouseleave", () => {
+						add_elem.style["opacity"] = "0";
+					});
+					add_elem.addEventListener("click", () => {
+						const parent_elem = row_elem.parentNode;
+						const chileNodes = Array.from(parent_elem.childNodes).map(elem => elem.childNodes[0].innerHTML);
+						let new_key = "new_key";
+						if (chileNodes.includes(new_key)) {
+							let count = 0;
+							while(chileNodes.includes(new_key + "_" + String(count))) { count += 1; }
+							new_key = new_key + "_" + String(count);
+						}
+						parent_elem.insertBefore(create_row_elem(new_key, "new_value"), row_elem.nextSibling);
+						const account = new Map(Array.from(parent_elem.childNodes).map(row_elem => {
+							return [row_elem.childNodes[0].innerHTML, row_elem.childNodes[1].innerHTML];
+						}));
+						draw_account(target_elem, new Map(account));
+					});
+					return row_elem;
+				};
+				if (!target_elem.hasChildNodes()) {
+					account_elem = document.createElement("div");
+					target_elem.appendChild(account_elem);
+					title_elem = document.createElement("h1");
+					title_elem.style["margin-bottom"] = "32px";
+					account_elem.appendChild(title_elem);
+					rows_elem = document.createElement("div");
+					rows_elem.style["margin-bottom"] = "32px";
+					account_elem.appendChild(rows_elem);
+					const qr_outside_elem = document.createElement("div");
+					qr_outside_elem.style["text-align"] = "center";
+					qr_outside_elem.style["margin-bottom"] = "32px";
+					account_elem.appendChild(qr_outside_elem);
+					qr_elem = document.createElement("div");
+					qr_elem.style["display"] = "inline-block";
+					qr_outside_elem.appendChild(qr_elem);
+					const url_elem = document.createElement("p");
+					url_elem.style["font-size"] = "12px";
+					url_elem.style["overflow-wrap"] = "break-word";
+					url_elem.innerHTML = "generated by: " + location.protocol + "//" + location.host + location.pathname;
+					account_elem.appendChild(url_elem);
+					account.forEach((value, key) => {
+						rows_elem.appendChild(create_row_elem(key, value));
+					});
+				}
+				else {
+					account_elem = target_elem.childNodes[0];
+					title_elem = account_elem.childNodes[0];
+					rows_elem = account_elem.childNodes[1];
+					const qr_outside_elem = account_elem.childNodes[2];
+					qr_outside_elem.removeChild(qr_outside_elem.childNodes[0]);
+					qr_elem = document.createElement("div");
+					qr_elem.style["display"] = "inline-block";
+					qr_outside_elem.appendChild(qr_elem);
+				}
+
+				title_elem.innerHTML = [...account.entries()][0][1];
+				if (account.has("password")) {
+					const qrcode = new QRCode(qr_elem, {
+						text: account.get("password"),
+						colorDark: "#000000",
+						colorLight: "#ffffff",
+						width: 256,
+						height: 256,
+						correctLevel: QRCode.CorrectLevel.H
+					});
+				}
+			};
+
+			document.addEventListener("DOMContentLoaded", () => {
+				const account = new Map();
+				account.set("service", "EXAMPLE SERVICE");
+				account.set("email", "example1234@example.example");
+				account.set("username", "temporary_user");
+				account.set("password", "example_1234_elpmaxe");
+
+				draw_account(document.getElementById("account"), account);
+			});
+		</script>
+	</head>
+	<body>
+		<div style="width: 480px; margin: 12px; margin-left: auto; margin-right: auto; padding: 32px; border: 1px solid #000;">
+			<div id="account"></div>
+		</div>
+	</body>
+</html>
