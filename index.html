@@ -37,6 +37,14 @@
 				border: 0px;
 				padding: 0px;
 			}
+			textarea {
+				font-family: 'Roboto Mono', monospace;
+				font-weight: 300;
+				font-size: 16px;
+				margin: 0px;
+				border: 0px;
+				padding: 0px;
+			}
 		</style>
 		<script src="./qrcode.js"></script>
 		<script type="module">
@@ -90,7 +98,7 @@
 					value_elem.style["width"] = "70%";
 					value_elem.style["cursor"] = "pointer";
 					value_elem.addEventListener("click", () => {
-						const input_elem = document.createElement("input");
+						const input_elem = document.createElement("textarea");
 						input_elem.value = value_elem.innerHTML;
 						input_elem.style["float"] = "left";
 						input_elem.style["width"] = "70%";
