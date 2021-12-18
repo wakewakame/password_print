@@ -2,7 +2,7 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>Account Print</title>
+		<title>Password Print</title>
 
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -38,7 +38,7 @@
 				padding: 0px;
 			}
 		</style>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha512-CNgIRecGo7nphbeZ04Sc13ka07paqdeTu0WR1IM4kNcpmBAUSHSQX0FslNhTDadL4O5SAGapGt4FodqL8My0mA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+		<script src="./qrcode.js"></script>
 		<script type="module">
 			const draw_account = (target_elem, account) => {
 				let account_elem = null;
@@ -180,6 +180,7 @@
 					account_elem.appendChild(qr_outside_elem);
 					qr_elem = document.createElement("div");
 					qr_elem.style["display"] = "inline-block";
+					qr_elem.style["width"] = "256px";
 					qr_outside_elem.appendChild(qr_elem);
 					const url_elem = document.createElement("p");
 					url_elem.style["font-size"] = "12px";
@@ -198,19 +199,21 @@
 					qr_outside_elem.removeChild(qr_outside_elem.childNodes[0]);
 					qr_elem = document.createElement("div");
 					qr_elem.style["display"] = "inline-block";
+					qr_elem.style["width"] = "256px";
 					qr_outside_elem.appendChild(qr_elem);
 				}
 
 				title_elem.innerHTML = [...account.entries()][0][1];
 				if (account.has("password")) {
-					const qrcode = new QRCode(qr_elem, {
-						text: account.get("password"),
-						colorDark: "#000000",
-						colorLight: "#ffffff",
+					const qrcode = new QRCode({
+						content: account.get("password"),
+						container: "svg-viewbox",
+						join: true,
 						width: 256,
 						height: 256,
-						correctLevel: QRCode.CorrectLevel.H
+						ecl: "H"
 					});
+					qr_elem.innerHTML = qrcode.svg();
 				}
 			};
 
