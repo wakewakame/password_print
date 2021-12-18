@@ -65,10 +65,14 @@
 						input_elem.style["float"] = "left";
 						input_elem.style["width"] = "30%";
 						input_elem.addEventListener("focusout", () => {
-							if (input_elem.value !== "") { key_elem.innerHTML = input_elem.value; }
+							const parent_elem = row_elem.parentNode;
+							const account_keys = Array.from(parent_elem.childNodes).map(row_elem => row_elem.childNodes[0].innerHTML);
+							if (
+								(input_elem.value !== "") &&
+								(!account_keys.includes(input_elem.value))
+							) { key_elem.innerHTML = input_elem.value; }
 							row_elem.insertBefore(key_elem, input_elem);
 							row_elem.removeChild(input_elem);
-							const parent_elem = row_elem.parentNode;
 							const account = new Map(Array.from(parent_elem.childNodes).map(row_elem => {
 								return [row_elem.childNodes[0].innerHTML, row_elem.childNodes[1].innerHTML];
 							}));
